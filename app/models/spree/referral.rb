@@ -1,5 +1,5 @@
 module Spree
-  class Referral < Spree::Base
+  class Referral < ActiveRecord::Base
     belongs_to :user, class_name: Spree.user_class.to_s
     has_many :referred_records
 

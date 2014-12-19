@@ -1,5 +1,5 @@
 module Spree
-  class Affiliate < Spree::Base
+  class Affiliate < ActiveRecord::Base
     has_many :referred_records
     
     validates_presence_of :name, :path
