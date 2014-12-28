@@ -1,38 +1,27 @@
 module Spree
   class Affiliate < ActiveRecord::Base
-    has_many :referred_records
     
-    validates_presence_of :name, :path
+    tokenizable
 
-    def referred_users
-      referred_records.includes(:user).collect(&:user).compact
-    end
+    belongs_to :user, class_name: Spree.user_class.to_s 
+    has_many :referrals
+    
+    validates_presence_of :path
+
+    after_create :create_code
 
     def referred_orders
-      referred_records.includes({:user => :orders}).collect{|u| u.user.orders }.flatten.compact
+      referrals.map(&:order)
     end
 
     def referred_count
-      referred_records.count
-    end
-
-    def get_layout
-      return false if layout == 'false'
-      layout
+      referrals.count
     end
 
     private
 
-      def self.layout_options
-        [
-          ["No Layout", "false"],
-          ["Spree Application Layout", 'spree/layouts/spree_application'],
-          ["Custom Layout Path", nil]
-        ]
-      end
-
-      def self.lookup_for_partial lookup_context, partial
-        lookup_context.template_exists?(partial, ["spree/affiliates"], false)
+      def create_code
+        add_token(:code, size: 8)
       end
 
   end

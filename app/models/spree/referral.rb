@@ -1,26 +1,12 @@
 module Spree
   class Referral < ActiveRecord::Base
-    belongs_to :user, class_name: Spree.user_class.to_s
-    has_many :referred_records
+    belongs_to :affiliate
+    belongs_to :order
 
-    validates_presence_of :user_id, :code
+    validates_presence_of :order_id, :affiliate_id
 
-    before_validation :attach_code, on: :create
-
-    def referred_users
-      referred_records.includes(:user).collect(&:user).compact
+    def amount
+      order.amount
     end
-
-    def referred_orders
-      referred_records.includes({:user => :orders}).collect{|u| u.user.orders }.flatten.compact
-    end
-
-    protected
-      def attach_code
-        self.code = loop do
-          code =  (0...8).map { (65 + rand(26)).chr }.join
-          break code unless Referral.exists?(code: code)
-        end
-      end
   end
 end
