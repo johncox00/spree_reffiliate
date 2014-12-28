@@ -18,7 +18,7 @@ module Spree
 
     def create_referral
       if session[:referral]
-        a = Affiliate.where(code: session[:referral]).first
+        a = Affiliate.find_by_token(:code, session[:referral])
         if a
           Referral.create!(affiliate: a, order: self)
         end
