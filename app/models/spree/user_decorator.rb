@@ -4,8 +4,8 @@ module Spree
 
     #attr_accessor :referral_code, :affiliate_code
 
-    after_create :create_referral
-    #after_create :referral_affiliate_check
+    # after_create :create_referral
+    # after_create :referral_affiliate_check
     
     def referred_count
       affiliate.referrals.count
